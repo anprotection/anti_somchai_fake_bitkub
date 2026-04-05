@@ -1,11 +1,11 @@
 # ใช้ relative path ไปยังโฟลเดอร์ list
-$dirPath = ".\list"
+$dirPath = "..\list"   # ถ้ารันจาก script/
+# หรือถ้ารันจาก project-root ให้ใช้ ".\list"
 
 # ดึงไฟล์ .txt ทั้งหมดในโฟลเดอร์ list
 $txtFiles = Get-ChildItem -Path $dirPath -Filter *.txt
 
 foreach ($file in $txtFiles) {
-    # อ่านเนื้อหาไฟล์ (แต่ละบรรทัดคือโดเมน)
     $domains = Get-Content -Path $file.FullName
 
     foreach ($domain in $domains) {
@@ -13,7 +13,6 @@ foreach ($file in $txtFiles) {
         if (-not [string]::IsNullOrWhiteSpace($domain)) {
             $ruleName = "Block_$domain"
 
-            # ตรวจสอบว่ามี rule อยู่แล้วหรือยัง
             $existingRule = Get-NetFirewallRule -DisplayName $ruleName -ErrorAction SilentlyContinue
             if (-not $existingRule) {
                 New-NetFirewallRule -DisplayName $ruleName `
